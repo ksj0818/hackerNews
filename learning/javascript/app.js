@@ -25,6 +25,7 @@ const newsFeed = getData(NEWS_URL);
 const ul = document.createElement('ul'); // ul 태그를 반환
 
 // hashchange는 어디서 발생하나, window객체가 있음 , addEventListenere() (어떤 이벤트가 발생하는지 듣고 있는 리스너를 등록)
+// 함수를 주는 이유는 자바스크립트의 특징 중 하나가 함수 자체를 값으로 취급해서 이렇게 함수한테 전달을 할 수도 있고 함수 자체를 실행할 수도 있음
 window.addEventListener('hashchange', function (){
   // location 객체는 브라우저가 기본적으로 제공해주는 객체인데 주소와 관련된 다양한 정보들을 제공해 줌
   // substr(): 내가 쓰고 싶은 위치 값만 지정해 주면 그 이후부터의 값까지 씀
@@ -34,16 +35,22 @@ window.addEventListener('hashchange', function (){
   const newsContent = getData(CONTENT_URL.replace('@id', id));  // CONTENT_URL의 @id를 id로 대체해야함
   const title = document.createElement('h1');
 
-  title.innerHTML = newsContent.title;
+  container.innerHTML = `
+    <h1>${newsContent.title}</h1>
 
-  content.appendChild(title);
-}); // 함수를 주는 이유는 자바스크립트의 특징 중 하나가 함수 자체를 값으로 취급해서 이렇게 함수한테 전달을 할 수도 있고 함수 자체를 실행할 수도 있음
+    <div>
+      <a href="#">목록으로</a>
+    </div>
+  `;
+}); 
+
+const newsList = [];
+
+// push() 배열 요소의 가장 마지막 요소에 새로 추가하는 메서드 
+newsList.push('<ul>');
 
 for (let i=0; i<10; i++) {
   const div = document.createElement('div');
-  const li = document.createElement('li'); // li 태그를 반환
-  const a = document.createElement('a');
-
   // 문자열만을 가지고 UI를 만드는 방식
   // 문자열을 가지고 HTML을 만드는 방법은 innerHTML이라고 하는 DOM API가 제공하는 속성
   // innerHTML속성은 문자열을 넣었는데 그 문자열 안에 HTML 태그가 포함되어 있으면 그거 자체를 DOM API로,
