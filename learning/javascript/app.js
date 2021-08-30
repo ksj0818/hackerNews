@@ -18,6 +18,11 @@ const NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
 const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'; // id값은 어떤 컨텐츠를 클릭했느냐에 따라 다 다름, 그래서 여기서 확정할 수가 없음 클릭했을때 바꿔주기 위해서 마킹만 해놓기
 // 실제 사용자가 타이틀을 클릭 했을 때 저 CONTENT_URL을 가지고 ajax 호출해서 데이터를 가져오기, 어떻게 클릭을 했는지 알 수 있을까? 브라우저가 제공하는 이벤트 시스템이 있음(6장에서 이벤트시스템 관련된 내용 확인)
 
+// 여러 함수에 걸쳐서 접근하게 되는 정보는 함수 밖으로 빼놓는 것이 필요함
+const store = {
+  currentPage: 1, // 현재 페이지
+};
+
 // 중복 코드 제거 (코드를 묶을 수 있는 구조 함수 이용)
 function getData(url) {
   // https://api.hnpwa.com/v0/news/1.json이라는 하는 것에서 가져오는 데이터를 동기적으로 가져오겠다.
@@ -38,14 +43,19 @@ newsList.push('<ul>');
 for (let i=0; i<10; i++) {
   newsList.push(`
     <li>
-      <a href="#${newsFeed[i].id}">
+      <a href="#/show/${newsFeed[i].id}">
         ${newsFeed[i].title} (${newsFeed[i].comments_count}
       </a>
     </li>
   `)
 }
 newsList.push('</ul>');
-
+newsList.push(`
+  <div>
+    <a href="#/page/${store.currentPage - 1}">이전 페이지</a>
+    <a href="#/pege/${store.currentPage + 1}">다음 페이지</a>
+  </div>
+`);
 // 하나의 문자열로 합치는 기능을 배열이 제공함. join()
 container.innerHTML = newsList.join('');
 }
@@ -73,7 +83,9 @@ function router() {
   // location.hash에 #이 들어있을 때는  빈값을 반환함
   if (routePath === '') {
     newsFeed();
-  } else { 
+  } else if(routePath.indexOf('#/page/') >= 0) {  // indexOf 메서드는 입력으로 주어지는 문자열을 찾아서 있다면 0 이상의 위치값을 리턴하게 되어있음, 없다면 -1 리턴
+    newsFeed();
+  } else {
     newsDetail();
   }
 }
